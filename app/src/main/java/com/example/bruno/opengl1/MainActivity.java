@@ -6,6 +6,7 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 
+import android.os.Vibrator;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -19,7 +20,7 @@ public class MainActivity extends CardboardActivity {
     private CardboardView cardboardView;
 
     private boolean renderSet = false;
-
+    private Vibrator mVibrator;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +39,7 @@ public class MainActivity extends CardboardActivity {
             Toast.makeText(this,"No OpenGL ES 2.0",Toast.LENGTH_LONG).show();
             return;
         }
-
+        mVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         setContentView(cardboardView);
     }
     @Override
@@ -48,6 +49,11 @@ public class MainActivity extends CardboardActivity {
             cardboardView.onPause();
         }
     }
+    @Override
+    public void onCardboardTrigger() {
+        mVibrator.vibrate(50);
+    }
+
     @Override
     protected void onResume(){
         super.onResume();
