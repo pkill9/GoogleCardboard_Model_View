@@ -1,11 +1,7 @@
 package com.example.bruno.opengl1;
 
 import android.content.Context;
-import android.os.Vibrator;
-import android.util.Log;
 
-import com.example.bruno.opengl1.objects.Mallet;
-import com.example.bruno.opengl1.objects.Puck;
 import com.example.bruno.opengl1.objects.Table;
 import com.example.bruno.opengl1.programs.ColorShaderProgram;
 import com.example.bruno.opengl1.programs.TextureShaderProgram;
@@ -16,7 +12,7 @@ import com.google.vrtoolkit.cardboard.HeadTransform;
 import com.google.vrtoolkit.cardboard.Viewport;
 
 import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
+
 
 import static android.opengl.GLES20.*;
 import static android.opengl.GLES20.glClear;
@@ -40,9 +36,9 @@ public class OpenGL1Render extends CardboardView implements CardboardView.Stereo
     private final float[] mHeadView = new float[16];
     private final float[] headViewMatrix = new float[16];
 
-    private Puck puck;
+
     private Table table;
-    private Mallet mallet;
+
 
     private TextureShaderProgram textureProgram;
     private ColorShaderProgram colorProgram;
