@@ -4,13 +4,13 @@ import android.content.Context;
 
 import com.example.bruno.opengl1.R;
 import com.example.bruno.opengl1.objects.Material;
+import com.example.bruno.opengl1.objects.Mesh;
 import com.example.bruno.opengl1.objects.Node;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +22,7 @@ public class ModelHelper {
 
 
 
-    public Node CreateModel(Context context, int id){
+    public static Node CreateModel(Context context){
         List<Material> mat = new LinkedList<>();
         float[] mMatrix = new float[16];
         setIdentityM(mMatrix, 0);
@@ -39,7 +39,7 @@ public class ModelHelper {
 
             for(int i = 0; i < materials.length(); i++){
                 JSONObject o = materials.getJSONObject(i);
-                mat.add(new Material(o.getJSONArray("diffuseTexture").getString(0),context));
+                mat.add(new Material(o.getJSONArray("diffuseTexture").getString(0), context));
             }
 
             for(int i = 0; i < nodes.length(); i++){
@@ -66,13 +66,15 @@ public class ModelHelper {
                 }
 
                 JSONArray e =o.getJSONArray("indices");
-                int [] indices = new int[e.length()];
+                short [] indices = new short[e.length()];
                 for (int j = 0; j <e.length();j++){
-                    vertexPos[i] = (float) e.getInt(i);
+                    vertexPos[i] = (short) e.getInt(i);
                 }
 
                 int matIndx = o.getInt("materialIndex");
-
+                Mesh newM = new Mesh(vertexPos,vertexTex,indices,mat.get(matIndx));
+                Node newN = new Node(mMatrix,newM);
+                head.addChild(newN);
             }
 
         }catch (JSONException e) {

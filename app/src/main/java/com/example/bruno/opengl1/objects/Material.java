@@ -13,7 +13,8 @@ public class Material {
 
     public Material(String dT, Context context){
         diffuseTexture = dT;
-        textId = TextureHelper.loadTexture(context, getId(dT, android.R.drawable.class));
+        int resID = context.getResources().getIdentifier(dT, "drawable", "com.example.bruno.opengl1");
+        textId = TextureHelper.loadTexture(context, resID);
     }
 
     public static int getId(String resourceName, Class<?> c) {
@@ -25,5 +26,6 @@ public class Material {
                     + resourceName + " / " + c, e);
         }
     }
+
 
 }

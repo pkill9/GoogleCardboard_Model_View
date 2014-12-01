@@ -26,7 +26,7 @@ public class Table {
 
     private final VertexArray vertexArray;
 
-    public Table() {
+    public Table(){
         vertexArray = new VertexArray(VERTEX_DATA);
     }
 
