@@ -4,8 +4,15 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-import static android.opengl.GLES20.*;
-import static com.example.bruno.opengl1.Constants.*;
+import static android.opengl.GLES20.GL_ARRAY_BUFFER;
+import static android.opengl.GLES20.GL_FLOAT;
+import static android.opengl.GLES20.GL_STATIC_DRAW;
+import static android.opengl.GLES20.glBindBuffer;
+import static android.opengl.GLES20.glBufferData;
+import static android.opengl.GLES20.glEnableVertexAttribArray;
+import static android.opengl.GLES20.glGenBuffers;
+import static android.opengl.GLES20.glVertexAttribPointer;
+import static com.example.bruno.opengl1.Constants.BYTES_PER_FLOAT;
 
 
 public class VertexBuffer {
@@ -48,6 +55,8 @@ public class VertexBuffer {
         // to begin reading data at this position of the currently bound buffer.
         glVertexAttribPointer(attributeLocation, componentCount, GL_FLOAT, false, stride, dataOffset);
         glEnableVertexAttribArray(attributeLocation);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     }
+
+
 }

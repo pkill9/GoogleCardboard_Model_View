@@ -31,6 +31,7 @@ public class ModelHelper {
 
     public static Node CreateModel(Context context){
         List<Material> mat = new LinkedList<>();
+
         float[] mMatrix = new float[16];
         setIdentityM(mMatrix, 0);
         Node head = new Node(mMatrix);
@@ -65,19 +66,19 @@ public class ModelHelper {
 
                 float [] vertexPos = new float[c.length()];
                 for (int j = 0; j <c.length();j++){
-                    vertexPos[i] = (float) c.getDouble(i);
+                    vertexPos[j] = (float) c.getDouble(j);
                 }
 
                 JSONArray d = m.getJSONArray("vertexTexCoordinates");
                 float [] vertexTex = new float[d.length()];
                 for (int j = 0; j < d.length(); j++){
-                    vertexPos[i] = (float) d.getDouble(i);
+                    vertexTex[j] = (float) d.getDouble(j);
                 }
 
                 JSONArray e =m.getJSONArray("indices");
                 short [] indices = new short[e.length()];
-                for (int j = 0; j <e.length();j++){
-                    vertexPos[i] = (short) e.getInt(i);
+                for (int j = 0; j <e.length(); j++){
+                    indices[j] = (short) e.getInt(j);
                 }
 
                 int matIndx = m.getInt("materialIndex");

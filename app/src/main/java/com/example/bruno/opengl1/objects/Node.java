@@ -1,7 +1,7 @@
 package com.example.bruno.opengl1.objects;
 
 import com.example.bruno.opengl1.data.IndexBuffer;
-import com.example.bruno.opengl1.data.VertexBuffer;
+import com.example.bruno.opengl1.data.VertexArray;
 import com.example.bruno.opengl1.programs.TextureShaderProgram;
 
 import java.util.LinkedList;
@@ -28,10 +28,9 @@ public class Node {
     public List<Node> children;
     public Mesh mesh;
 
-
-    private VertexBuffer PosBuffer;
-    private VertexBuffer texCBuffer;
-    private IndexBuffer indx;
+    private VertexArray PosBuffer;
+    private VertexArray texCBuffer;
+    private IndexBuffer indexBuffer;
 
     public Node(float[] mMat){
         mMatrix = mMat;
@@ -40,26 +39,43 @@ public class Node {
 
     public Node(float[] mMat, Mesh m){
         this.mesh = m;
-        children = new LinkedList<>();
+        mMatrix = mMat;
+        //Log.wtf("mesh.Pos", Arrays.toString(mesh.vertexPositions));
+        PosBuffer = new VertexArray(mesh.vertexPositions);
+        texCBuffer = new VertexArray(mesh.vertexTexCoordinates);
+        indexBuffer = new IndexBuffer(mesh.indices);
+
     }
 
-    public void draw(float[] modMatrix,float[] viewProjHead,TextureShaderProgram textureProgram){
+    public void draw(float[] modMatrix,float[] viewProjHead, TextureShaderProgram textureProgram, int texture){
         float [] temp = new float[16];
         float [] modelViewProjectionMatrix = new float[16];
+        textureProgram.useProgram();
 
-        multiplyMM(temp, 0, modMatrix, 0, mMatrix, 0);
-        multiplyMM(modelViewProjectionMatrix, 0, viewProjHead, 0, temp, 0);
+        //multiplyMM(temp, 0, modMatrix, 0, mMatrix, 0);
 
+        multiplyMM(modelViewProjectionMatrix, 0, viewProjHead, 0, mMatrix, 0);
         textureProgram.setUniforms(modelViewProjectionMatrix, mesh.m.textId);
 
         this.bindData(textureProgram);
+        //Log.e("ABOUT TO DRAW", Arrays.toString(modelViewProjectionMatrix));
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer.getBufferId());
+        glDrawElements(GL_TRIANGLES, mesh.indices.length, GL_UNSIGNED_SHORT, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+
+    public void bindData(TextureShaderProgram textureProgram) {
+
+        PosBuffer.setVertexAttribPointer(0, textureProgram.getPositionAttributeLocation(), POSITION_COMPONENT_COUNT, 0);
+        texCBuffer.setVertexAttribPointer(0,textureProgram.getTextureCoordinatesAttributeLocation(),TEXTURE_COORDINATES_COMPONENT_COUNT,0);
 
     }
 
-    public void drawC(float[] viewProjHead,TextureShaderProgram textureProgram){
+    public void drawC(float[] viewProjHead,TextureShaderProgram textureProgram,int texture){
 
        for (Node n:children){
-           n.draw(mMatrix,viewProjHead,textureProgram);
+           n.draw(mMatrix,viewProjHead,textureProgram,texture);
        }
 
     }
@@ -69,17 +85,5 @@ public class Node {
     }
 
 
-    public void bindData(TextureShaderProgram textureProgram) {
-        PosBuffer = new VertexBuffer(mesh.vertexPositions);
-        PosBuffer.setVertexAttribPointer(0, textureProgram.getPositionAttributeLocation(), POSITION_COMPONENT_COUNT, STRIDEP);
 
-        texCBuffer = new VertexBuffer(mesh.vertexTexCoordinates);
-        texCBuffer.setVertexAttribPointer(POSITION_COMPONENT_COUNT,textureProgram.getTextureCoordinatesAttributeLocation(),TEXTURE_COORDINATES_COMPONENT_COUNT,STRIDET);
-
-        indx = new IndexBuffer(mesh.indices);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indx.getBufferId());
-        glDrawElements(GL_TRIANGLES, mesh.indices.length, GL_UNSIGNED_SHORT, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    }
 }
