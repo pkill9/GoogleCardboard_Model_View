@@ -1,6 +1,7 @@
 package com.example.bruno.opengl1.util;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.example.bruno.opengl1.R;
 import com.example.bruno.opengl1.objects.Material;
@@ -20,7 +21,13 @@ import static com.example.bruno.opengl1.util.TextResourceReader.readTextFileFrom
 
 public class ModelHelper {
 
-
+    public static void longInfo(String str) {
+        if(str.length() > 4000) {
+            Log.i("JSON String!!!", str.substring(0, 4000));
+            longInfo(str.substring(4000));
+        } else
+            Log.i("JSON String!!!", str);
+    }
 
     public static Node CreateModel(Context context){
         List<Material> mat = new LinkedList<>();
@@ -30,48 +37,50 @@ public class ModelHelper {
 
         String StringJSON = readTextFileFromResource(context, R.raw.model_json);
 
+      Log.i("String Size: ",Integer.toString(StringJSON.length()));
+      //longInfo(StringJSON);
+
+
         try {
             JSONObject reader = new JSONObject(StringJSON);
 
             JSONArray materials = reader.getJSONArray("materials");
-            JSONArray nodes = reader.getJSONArray("nodes");
+            JSONArray nodes = reader.getJSONArray("nodes").getJSONObject(0).getJSONArray("meshIndices");
             JSONArray meshes = reader.getJSONArray("meshes");
 
             for(int i = 0; i < materials.length(); i++){
                 JSONObject o = materials.getJSONObject(i);
                 mat.add(new Material(o.getJSONArray("diffuseTexture").getString(0), context));
             }
+            JSONArray nodeMMatrix = reader.getJSONArray("nodes").getJSONObject(0).getJSONArray("modelMatrix");
+
+            for(int j =0;j<16;j++){
+                mMatrix[j]= (float)nodeMMatrix.getDouble(j);
+            }
 
             for(int i = 0; i < nodes.length(); i++){
-                JSONObject o = materials.getJSONObject(i);
-                JSONArray a =o.getJSONArray("modelMatrix");
-                JSONArray b =o.getJSONArray("meshIndices");
 
-                for(int j =0;j<16;j++){
-                    mMatrix[i]= (float)a.getDouble(i);
-                }
+                JSONObject m = meshes.getJSONObject(i);
+                JSONArray c = m.getJSONArray("vertexPositions");
 
-                int meshI = b.getInt(0);
-                JSONObject m = meshes.getJSONObject(meshI);
-                JSONArray c =o.getJSONArray("vertexPositions");
                 float [] vertexPos = new float[c.length()];
                 for (int j = 0; j <c.length();j++){
                     vertexPos[i] = (float) c.getDouble(i);
                 }
 
-                JSONArray d =o.getJSONArray("vertexTexCoordinates");
+                JSONArray d = m.getJSONArray("vertexTexCoordinates");
                 float [] vertexTex = new float[d.length()];
                 for (int j = 0; j < d.length(); j++){
                     vertexPos[i] = (float) d.getDouble(i);
                 }
 
-                JSONArray e =o.getJSONArray("indices");
+                JSONArray e =m.getJSONArray("indices");
                 short [] indices = new short[e.length()];
                 for (int j = 0; j <e.length();j++){
                     vertexPos[i] = (short) e.getInt(i);
                 }
 
-                int matIndx = o.getInt("materialIndex");
+                int matIndx = m.getInt("materialIndex");
                 Mesh newM = new Mesh(vertexPos,vertexTex,indices,mat.get(matIndx));
                 Node newN = new Node(mMatrix,newM);
                 head.addChild(newN);

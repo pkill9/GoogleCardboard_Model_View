@@ -71,6 +71,7 @@ public class OpenGL1Render extends CardboardView implements CardboardView.Stereo
         // Set the OpenGL viewport to fill the entire surface.
         glViewport(0, 0, width, height);
         perspectiveM(projectionMatrix,0, 45, (float) width / (float) height, 1f, 10f);
+
         setLookAtM(viewMatrix, 0, 0f, 1.2f, 2.2f, 0f, 0f, 0f, 0f, 1f, 0f);
     }
 

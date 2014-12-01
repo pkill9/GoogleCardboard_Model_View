@@ -18,9 +18,9 @@ public class Mesh {
         indices = ind;
         m = mat;
 
-        Log.i(Constants.TAG, Arrays.toString(vertexPositions));
-        Log.i(Constants.TAG, Arrays.toString(vertexTexCoordinates));
-        Log.i(Constants.TAG, Arrays.toString(indices));
+        Log.e(Constants.TAG, Arrays.toString(vertexPositions));
+        Log.e(Constants.TAG, Arrays.toString(vertexTexCoordinates));
+        Log.e(Constants.TAG, Arrays.toString(indices));
 
     }
 
